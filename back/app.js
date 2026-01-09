@@ -30,6 +30,25 @@ app.get('/categorias', async (req, res) => {
         res.status(500).json({ error: 'Error al obtener las categorías' });
     }
 });
+
+app.post('/categorias', async (req, res) => {
+    try {
+        const { nombre, color } = req.body;
+
+        // Validar si ya existe la categoría
+        const categoriaExistente = await Categoria.findOne({ nombre: nombre.trim() });
+        if (categoriaExistente) {
+            return res.status(400).json({ error: 'La categoría ya existe' });
+        }
+
+        const nuevaCategoria = new Categoria({ nombre: nombre.trim(), color: color });
+        await nuevaCategoria.save();
+        res.status(201).json(nuevaCategoria);
+    } catch (err) {
+        res.status(500).json({ error: 'Error al crear la categoría' });
+    }
+});
+
 // Iniciar el servidor
 const PORT = 5000;
 app.listen(PORT, () => {
