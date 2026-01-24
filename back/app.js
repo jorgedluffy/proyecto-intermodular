@@ -73,6 +73,79 @@ app.get('/gastos', async (req, res) => {
     }
 });
 
+app.post('/gastos', async (req, res) => {
+    try {
+        const { descripcion, cantidad, categoria } = req.body;
+
+        // Validar datos requeridos
+        if (!descripcion || !cantidad || !categoria) {
+            return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+        }
+
+        const nuevoGasto = new Gasto(req.body);
+        await nuevoGasto.save();
+        const gastoGuardado = await Gasto.findById(nuevoGasto._id).populate('categoria');
+        res.status(201).json(gastoGuardado);
+    } catch (err) {
+        res.status(500).json({ error: 'Error al crear el gasto' });
+    }
+});
+
+// Actualizar gasto
+app.put('/gastos/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { descripcion, cantidad, categoria } = req.body;
+
+        if (!descripcion || !cantidad || !categoria) {
+            return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+        }
+
+        const gastoActualizado = await Gasto.findByIdAndUpdate(
+            id,
+            { descripcion, cantidad, categoria },
+            { new: true } // Devuelve el documento actualizado
+        ).populate('categoria');
+        if (!gastoActualizado) {
+            return res.status(404).json({ error: 'Gasto no encontrado' });
+        }
+
+        res.json(gastoActualizado);
+    } catch (err) {
+        res.status(500).json({ error: 'Error al actualizar el gasto' });
+    }
+});
+
+// Eliminar categorias
+app.delete('/categorias/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const categoriaEliminada = await Categoria.findByIdAndDelete(id);
+        if (!categoriaEliminada) {
+            return res.status(404).json({ error: 'Categoria no encontrada' });
+        }
+
+        res.json({ mensaje: 'Categoria eliminada correctamente' });
+    } catch (err) {
+        res.status(500).json({ error: 'Error al eliminar la categoria' });
+    }
+});
+
+// Eliminar gasto
+app.delete('/gastos/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const gastoEliminado = await Gasto.findByIdAndDelete(id);
+        if (!gastoEliminado) {
+            return res.status(404).json({ error: 'Gasto no encontrado' });
+        }
+
+        res.json({ mensaje: 'Gasto eliminado correctamente' });
+    } catch (err) {
+        res.status(500).json({ error: 'Error al eliminar el gasto' });
+    }
+});
+
 // Iniciar el servidor
 const PORT = 5000;
 app.listen(PORT, () => {
