@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const Gasto = require('./models/Gasto');
 const Categoria = require('./models/Categoria');
+const { descargarCsv, cargarCsv } = require('./controllers/gastoController');
 
 app.use(cors());
 // Middleware
@@ -18,6 +19,36 @@ mongoose.connect('mongodb://localhost:27017/gastos', {
     .catch(err => console.error(err));
 
 
+//************************************************************************************************ 
+//CSV
+const multer = require('multer');
+const csvParser = require('csv-parser');
+const fs = require('fs');
+
+// Configurar almacenamiento de multer
+const upload = multer({
+    dest: 'uploads/',
+    limits: { fileSize: 5 * 1024 * 1024 }, // Límite de archivo: 5 MB
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype === 'text/csv') {
+            cb(null, true);
+        } else {
+            cb(new Error('Solo se permiten archivos CSV'));
+        }
+    },
+});
+
+app.post('/cargarCsv', upload.single('file'), async (req, res) => {
+    try {
+        await cargarCsv(req, res);
+    } catch (err) {
+        console.error("Error en la carga del CSV:", err); // 👀 Agrega este log
+        res.status(500).json({ error: 'Error al cargar el csv 1' });
+    }
+});
+
+
+app.get('/descargarCsv', descargarCsv);
 //************************************************************************************************ 
 // ** Rutas API **
 
