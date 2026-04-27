@@ -64,7 +64,7 @@ app.get('/categorias', async (req, res) => {
 
 app.post('/categorias', async (req, res) => {
     try {
-        const { nombre, color } = req.body;
+        const { nombre, color, descripcion, activo } = req.body;
 
         // Validar si ya existe la categoría
         const categoriaExistente = await Categoria.findOne({ nombre: nombre.trim() });
@@ -72,7 +72,7 @@ app.post('/categorias', async (req, res) => {
             return res.status(400).json({ error: 'La categoría ya existe' });
         }
 
-        const nuevaCategoria = new Categoria({ nombre: nombre.trim(), color: color });
+        const nuevaCategoria = new Categoria({ nombre: nombre.trim(), color: color, descripcion: descripcion, activo: activo });
         await nuevaCategoria.save();
         res.status(201).json(nuevaCategoria);
     } catch (err) {
@@ -83,7 +83,7 @@ app.post('/categorias', async (req, res) => {
 // Gastos
 app.get('/gastos', async (req, res) => {
     try {
-        const { categoria, cantidad, fechaInicio, fechaFin } = req.query;
+        const { categoria, cantidad, fechaInicio, fechaFin} = req.query;
 
         let filtro = {};
         if (categoria) {
@@ -106,10 +106,10 @@ app.get('/gastos', async (req, res) => {
 
 app.post('/gastos', async (req, res) => {
     try {
-        const { descripcion, cantidad, categoria } = req.body;
+        const { descripcion, cantidad, categoria, nota, tipo } = req.body;
 
         // Validar datos requeridos
-        if (!descripcion || !cantidad || !categoria) {
+        if (!descripcion || !cantidad || !categoria|| !nota|| !tipo) {
             return res.status(400).json({ error: 'Todos los campos son obligatorios' });
         }
 
@@ -126,15 +126,15 @@ app.post('/gastos', async (req, res) => {
 app.put('/gastos/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { descripcion, cantidad, categoria } = req.body;
+        const { descripcion, cantidad, categoria, nota, tipo } = req.body;
 
-        if (!descripcion || !cantidad || !categoria) {
+        if (!descripcion || !cantidad || !categoria|| !nota|| !tipo) {
             return res.status(400).json({ error: 'Todos los campos son obligatorios' });
         }
 
         const gastoActualizado = await Gasto.findByIdAndUpdate(
             id,
-            { descripcion, cantidad, categoria },
+            { descripcion, cantidad, categoria, nota, tipo },
             { new: true } // Devuelve el documento actualizado
         ).populate('categoria');
         if (!gastoActualizado) {
