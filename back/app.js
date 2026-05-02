@@ -126,15 +126,15 @@ app.post('/gastos', async (req, res) => {
 app.put('/gastos/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { descripcion, cantidad, categoria, nota, tipo } = req.body;
+        const { descripcion, cantidad, categoria, nota, tipo, source } = req.body;
 
-        if (!descripcion || !cantidad || !categoria|| !nota|| !tipo) {
+        if (!descripcion || !cantidad || !categoria|| !nota|| !tipo || !source) {
             return res.status(400).json({ error: 'Todos los campos son obligatorios' });
         }
 
         const gastoActualizado = await Gasto.findByIdAndUpdate(
             id,
-            { descripcion, cantidad, categoria, nota, tipo },
+            { descripcion, cantidad, categoria, nota, tipo, source },
             { new: true } // Devuelve el documento actualizado
         ).populate('categoria');
         if (!gastoActualizado) {

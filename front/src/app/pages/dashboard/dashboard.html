@@ -37,18 +37,18 @@
         </tr>
       </thead>
       <tbody class="bg-white">
-        @for (expense of expenses; track expense.date + expense.concept) {
+        @for (gasto of expenses(); track gasto._id) {
           <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ expense.date }}</td>
-            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ expense.concept }}</td>
+            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ gasto.fecha | date:'shortDate' }}</td>
+            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ gasto.descripcion }}</td>
             <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-              ${{ expense.amount.toFixed(2) }}
+              ${{ gasto.cantidad.toFixed(2) }}
             </td>
-            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ expense.type }}</td>
+            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ gasto.tipo }}</td>
             <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-              {{ expense.category }}
+              {{ getCategoryName(gasto.categoria) }}
             </td>
-            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ expense.source }}</td>
+            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{{ gasto.source }}</td>
             <td class="px-4 py-3 whitespace-nowrap text-sm">
               <div class="flex gap-1">
                 <!-- Edit Button -->

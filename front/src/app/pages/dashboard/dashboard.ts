@@ -1,36 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ExpenseService } from '../../services/expense.service';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-export class Dashboard {
-  expenses = [
-    {
-      date: '2023-10-15',
-      concept: 'Groceries',
-      amount: 150.0,
-      type: 'Expense',
-      category: 'Food',
-      source: 'Credit Card',
-    },
-    {
-      date: '2023-10-14',
-      concept: 'Salary',
-      amount: 3000.0,
-      type: 'Income',
-      category: 'Work',
-      source: 'Bank Transfer',
-    },
-    {
-      date: '2023-10-12',
-      concept: 'Utilities',
-      amount: 250.0,
-      type: 'Expense',
-      category: 'Bills',
-      source: 'Direct Debit',
-    },
-  ];
+export class Dashboard implements OnInit {
+  private expenseService = inject(ExpenseService);
+  expenses = this.expenseService.expenses;
+
+  ngOnInit() {
+    this.expenseService.loadExpenses();
+  }
+
+  // Helper method to extract the name if categoria is populated
+  getCategoryName(categoria: any): string {
+    if (!categoria) return 'Sin categoría';
+    return typeof categoria === 'object' ? categoria.nombre : categoria;
+  }
 }
