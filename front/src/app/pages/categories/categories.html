@@ -2,6 +2,7 @@
   <!-- Add Category Button -->
   <div>
     <button
+      (click)="openModal()"
       class="px-4 py-2 bg-green-200 text-gray-900 text-sm font-medium rounded hover:bg-green-300 transition-colors"
     >
       Add category
@@ -21,19 +22,19 @@
         </tr>
       </thead>
       <tbody class="bg-white">
-        @for (category of categories; track category.name) {
+        @for (categoria of categories(); track categoria.nombre) {
           <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
             <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-              {{ category.name }}
+              {{ categoria.nombre }}
             </td>
             <td class="px-4 py-3 text-sm text-gray-900">
-              {{ category.description }}
+              {{ categoria.descripcion }}
             </td>
             <td class="px-4 py-3 whitespace-nowrap text-sm">
-              <div class="w-6 h-6 rounded" [style.background-color]="category.color"></div>
+              <div class="w-6 h-6 rounded" [style.background-color]="categoria.color"></div>
             </td>
             <td class="px-4 py-3 whitespace-nowrap text-sm">
-              @if (category.active) {
+              @if (categoria.activo) {
                 <div
                   class="inline-flex items-center justify-center w-6 h-6 border-2 border-green-500 rounded"
                 >
@@ -75,6 +76,7 @@
               <div class="flex gap-1">
                 <!-- Edit Button -->
                 <button
+                  (click)="openModal(categoria)"
                   class="p-1.5 bg-green-100 hover:bg-green-200 rounded transition-colors"
                   title="Edit"
                 >
@@ -94,6 +96,7 @@
                 </button>
                 <!-- Delete Button -->
                 <button
+                  (click)="deleteCategory(categoria._id)"
                   class="p-1.5 bg-red-100 hover:bg-red-200 rounded transition-colors"
                   title="Delete"
                 >
@@ -119,3 +122,10 @@
     </table>
   </div>
 </div>
+
+<app-category-modal
+  [isOpen]="isModalOpen"
+  [categoryToEdit]="selectedCategory"
+  (close)="closeModal()"
+  (save)="onSaveCategory($event)">
+</app-category-modal>

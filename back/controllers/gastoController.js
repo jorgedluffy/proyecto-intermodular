@@ -86,6 +86,7 @@ const descargarCsv = async (req, res) => {
             descripcion: gasto.descripcion,
             cantidad: gasto.cantidad,
             categoria: gasto.categoria ? gasto.categoria.nombre : "Sin categoría",
+            source: gasto.source || 'Unknown',
             fecha: new Date(gasto.fecha).toLocaleDateString('es-ES')
         }));
 

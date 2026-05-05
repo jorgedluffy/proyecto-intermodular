@@ -126,15 +126,15 @@ app.post('/gastos', async (req, res) => {
 app.put('/gastos/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { descripcion, cantidad, categoria, nota, tipo } = req.body;
+        const { descripcion, cantidad, categoria, nota, tipo, source } = req.body;
 
-        if (!descripcion || !cantidad || !categoria|| !nota|| !tipo) {
+        if (!descripcion || !cantidad || !categoria|| !nota|| !tipo || !source) {
             return res.status(400).json({ error: 'Todos los campos son obligatorios' });
         }
 
         const gastoActualizado = await Gasto.findByIdAndUpdate(
             id,
-            { descripcion, cantidad, categoria, nota, tipo },
+            { descripcion, cantidad, categoria, nota, tipo, source },
             { new: true } // Devuelve el documento actualizado
         ).populate('categoria');
         if (!gastoActualizado) {
@@ -144,6 +144,31 @@ app.put('/gastos/:id', async (req, res) => {
         res.json(gastoActualizado);
     } catch (err) {
         res.status(500).json({ error: 'Error al actualizar el gasto' });
+    }
+});
+
+// Actualizar categorias
+app.put('/categorias/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { nombre, color, descripcion, activo } = req.body;
+
+        if (!nombre) {
+            return res.status(400).json({ error: 'El nombre es obligatorio' });
+        }
+
+        const categoriaActualizada = await Categoria.findByIdAndUpdate(
+            id,
+            { nombre: nombre.trim(), color, descripcion, activo },
+            { new: true }
+        );
+        if (!categoriaActualizada) {
+            return res.status(404).json({ error: 'Categoria no encontrada' });
+        }
+
+        res.json(categoriaActualizada);
+    } catch (err) {
+        res.status(500).json({ error: 'Error al actualizar la categoria' });
     }
 });
 
