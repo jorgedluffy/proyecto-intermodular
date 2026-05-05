@@ -32,6 +32,16 @@ export class CategoryService {
     );
   }
 
+  updateCategory(id: string, categoria: Partial<Categoria>): Observable<Categoria> {
+    return this.http.put<Categoria>(`${this.apiUrl}/${id}`, categoria).pipe(
+      tap((updatedCat) => {
+        this.categoriesSignal.update(cats =>
+          cats.map(c => c._id === id ? updatedCat : c)
+        );
+      })
+    );
+  }
+
   deleteCategory(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`).pipe(
       tap(() => {

@@ -105,4 +105,4 @@ const descargarCsv = async (req, res) => {
         res.status(500).json({ error: 'Error al generar el CSV' });
     }
 }
-module.exports = { descargarCsv, cargarCsv };escargarCsv, cargarCsv };
+module.exports = { descargarCsv, cargarCsv };

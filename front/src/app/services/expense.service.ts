@@ -53,4 +53,18 @@ export class ExpenseService {
       })
     );
   }
+
+  importFile(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post('http://localhost:5000/cargarCsv', formData).pipe(
+      tap(() => {
+        this.loadExpenses();
+      })
+    );
+  }
+
+  exportFile(): void {
+    window.open('http://localhost:5000/descargarCsv', '_blank');
+  }
 }

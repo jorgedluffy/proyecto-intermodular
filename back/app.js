@@ -147,6 +147,31 @@ app.put('/gastos/:id', async (req, res) => {
     }
 });
 
+// Actualizar categorias
+app.put('/categorias/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { nombre, color, descripcion, activo } = req.body;
+
+        if (!nombre) {
+            return res.status(400).json({ error: 'El nombre es obligatorio' });
+        }
+
+        const categoriaActualizada = await Categoria.findByIdAndUpdate(
+            id,
+            { nombre: nombre.trim(), color, descripcion, activo },
+            { new: true }
+        );
+        if (!categoriaActualizada) {
+            return res.status(404).json({ error: 'Categoria no encontrada' });
+        }
+
+        res.json(categoriaActualizada);
+    } catch (err) {
+        res.status(500).json({ error: 'Error al actualizar la categoria' });
+    }
+});
+
 // Eliminar categorias
 app.delete('/categorias/:id', async (req, res) => {
     try {
