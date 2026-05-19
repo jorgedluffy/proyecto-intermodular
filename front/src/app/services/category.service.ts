@@ -1,6 +1,7 @@
-import { Injectable, signal, inject, computed } from '@angular/core';
+import { Injectable, signal, inject, computed, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { ConfigService } from './config.service';
 
 export interface Categoria {
   _id?: string;
@@ -13,10 +14,19 @@ export interface Categoria {
 @Injectable({ providedIn: 'root' })
 export class CategoryService {
   private http = inject(HttpClient);
+  private configService = inject(ConfigService);
   private apiUrl = 'http://localhost:5000/categorias';
 
   private categoriesSignal = signal<Categoria[]>([]);
   public categories = computed(() => this.categoriesSignal());
+
+  constructor() {
+    // Escuchar reactivamente los cambios en idioma para recargar
+    effect(() => {
+      this.configService.language();
+      this.loadCategories();
+    });
+  }
 
   loadCategories(): void {
     this.http.get<Categoria[]>(this.apiUrl).subscribe(data => {

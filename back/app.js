@@ -6,10 +6,12 @@ const cors = require('cors');
 const Gasto = require('./models/Gasto');
 const Categoria = require('./models/Categoria');
 const { descargarCsv, cargarCsv } = require('./controllers/gastoController');
+const localization = require('./middlewares/localization');
 
 app.use(cors());
 // Middleware
 app.use(bodyParser.json());
+app.use(localization);
 
 // Conexión a MongoDB
 mongoose.connect('mongodb://localhost:27017/gastos', {
@@ -66,13 +68,22 @@ app.post('/categorias', async (req, res) => {
     try {
         const { nombre, color, descripcion, activo } = req.body;
 
-        // Validar si ya existe la categoría
-        const categoriaExistente = await Categoria.findOne({ nombre: nombre.trim() });
+        // Normalizar para que soporte tanto objeto como string simple
+        const nombreObj = typeof nombre === 'object' ? nombre : { es: nombre.trim(), en: nombre.trim() };
+        const descripcionObj = typeof descripcion === 'object' ? descripcion : { es: descripcion || '', en: descripcion || '' };
+
+        // Validar si ya existe la categoría por nombre en español
+        const categoriaExistente = await Categoria.findOne({ 'nombre.es': nombreObj.es });
         if (categoriaExistente) {
             return res.status(400).json({ error: 'La categoría ya existe' });
         }
 
-        const nuevaCategoria = new Categoria({ nombre: nombre.trim(), color: color, descripcion: descripcion, activo: activo });
+        const nuevaCategoria = new Categoria({ 
+            nombre: nombreObj, 
+            color: color, 
+            descripcion: descripcionObj, 
+            activo: activo 
+        });
         await nuevaCategoria.save();
         res.status(201).json(nuevaCategoria);
     } catch (err) {
@@ -157,9 +168,12 @@ app.put('/categorias/:id', async (req, res) => {
             return res.status(400).json({ error: 'El nombre es obligatorio' });
         }
 
+        const nombreObj = typeof nombre === 'object' ? nombre : { es: nombre.trim(), en: nombre.trim() };
+        const descripcionObj = typeof descripcion === 'object' ? descripcion : { es: descripcion || '', en: descripcion || '' };
+
         const categoriaActualizada = await Categoria.findByIdAndUpdate(
             id,
-            { nombre: nombre.trim(), color, descripcion, activo },
+            { nombre: nombreObj, color, descripcion: descripcionObj, activo },
             { new: true }
         );
         if (!categoriaActualizada) {

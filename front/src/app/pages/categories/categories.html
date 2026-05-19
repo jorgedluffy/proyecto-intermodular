@@ -1,126 +1,183 @@
 <div class="space-y-4">
-  <!-- Add Category Button -->
-  <div>
-    <button
-      (click)="openModal()"
-      class="px-4 py-2 bg-green-200 text-gray-900 text-sm font-medium rounded hover:bg-green-300 transition-colors"
-    >
-      Add category
-    </button>
+  <!-- Buttons and Search on same row -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <button
+        (click)="openModal()"
+        class="px-4 py-2 bg-green-200 text-gray-900 text-sm font-medium rounded hover:bg-green-300 transition-colors"
+      >
+        {{ 'BUTTON_ADD_CATEGORY' | translate }}
+      </button>
+    </div>
+
+    <input
+      type="text"
+      [placeholder]="'INPUT_SEARCH' | translate"
+      class="px-4 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 w-full sm:w-64"
+      (input)="updateSearchTerm($event)"
+    />
   </div>
 
-  <!-- Table -->
-  <div class="overflow-x-auto bg-white border border-gray-200 rounded">
-    <table class="min-w-full">
-      <thead class="bg-gray-50 border-b border-gray-200">
-        <tr>
-          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">Name</th>
-          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">Description</th>
-          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">Color</th>
-          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">Active</th>
-          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700">Actions</th>
-        </tr>
-      </thead>
-      <tbody class="bg-white">
-        @for (categoria of categories(); track categoria.nombre) {
-          <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-              {{ categoria.nombre }}
-            </td>
-            <td class="px-4 py-3 text-sm text-gray-900">
-              {{ categoria.descripcion }}
-            </td>
-            <td class="px-4 py-3 whitespace-nowrap text-sm">
-              <div class="w-6 h-6 rounded" [style.background-color]="categoria.color"></div>
-            </td>
-            <td class="px-4 py-3 whitespace-nowrap text-sm">
-              @if (categoria.activo) {
-                <div
-                  class="inline-flex items-center justify-center w-6 h-6 border-2 border-green-500 rounded"
-                >
-                  <svg
-                    class="w-4 h-4 text-green-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="3"
-                      d="M5 13l4 4L19 7"
-                    ></path>
-                  </svg>
-                </div>
-              } @else {
-                <div
-                  class="inline-flex items-center justify-center w-6 h-6 bg-red-500 rounded-full"
-                >
-                  <svg
-                    class="w-4 h-4 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    ></path>
-                  </svg>
-                </div>
+  <!-- Table / Empty State -->
+  @if (categories().length > 0) {
+    <div class="overflow-x-auto bg-white border border-gray-200 rounded">
+      <table class="min-w-full">
+        <thead class="bg-gray-50 border-b border-gray-200">
+          <tr>
+            <th 
+              class="px-4 py-3 text-left text-xs font-semibold text-gray-700 cursor-pointer hover:bg-gray-100 select-none transition-colors"
+              (click)="sortBy('nombre')"
+            >
+              {{ 'INPUT_NAME' | translate }}
+              @if (sortColumn() === 'nombre') {
+                <span class="ml-1 text-[10px]">{{ sortDirection() === 'asc' ? '▲' : '▼' }}</span>
               }
-            </td>
-            <td class="px-4 py-3 whitespace-nowrap text-sm">
-              <div class="flex gap-1">
-                <!-- Edit Button -->
-                <button
-                  (click)="openModal(categoria)"
-                  class="p-1.5 bg-green-100 hover:bg-green-200 rounded transition-colors"
-                  title="Edit"
-                >
-                  <svg
-                    class="w-4 h-4 text-green-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    ></path>
-                  </svg>
-                </button>
-                <!-- Delete Button -->
-                <button
-                  (click)="deleteCategory(categoria._id)"
-                  class="p-1.5 bg-red-100 hover:bg-red-200 rounded transition-colors"
-                  title="Delete"
-                >
-                  <svg
-                    class="w-4 h-4 text-red-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    ></path>
-                  </svg>
-                </button>
-              </div>
-            </td>
+            </th>
+            <th 
+              class="px-4 py-3 text-left text-xs font-semibold text-gray-700 cursor-pointer hover:bg-gray-100 select-none transition-colors"
+              (click)="sortBy('descripcion')"
+            >
+              {{ 'INPUT_DESCRIPTION' | translate }}
+              @if (sortColumn() === 'descripcion') {
+                <span class="ml-1 text-[10px]">{{ sortDirection() === 'asc' ? '▲' : '▼' }}</span>
+              }
+            </th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 select-none">
+              {{ 'INPUT_COLOR' | translate }}
+            </th>
+            <th 
+              class="px-4 py-3 text-left text-xs font-semibold text-gray-700 cursor-pointer hover:bg-gray-100 select-none transition-colors"
+              (click)="sortBy('activo')"
+            >
+              {{ 'INPUT_ACTIVE' | translate }}
+              @if (sortColumn() === 'activo') {
+                <span class="ml-1 text-[10px]">{{ sortDirection() === 'asc' ? '▲' : '▼' }}</span>
+              }
+            </th>
+            <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 select-none">
+              {{ 'INPUT_ACTIONS' | translate }}
+            </th>
           </tr>
-        }
-      </tbody>
-    </table>
-  </div>
+        </thead>
+        <tbody class="bg-white">
+          @for (categoria of filteredCategories(); track categoria._id) {
+            <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                {{ categoria.nombre }}
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-900">
+                {{ categoria.descripcion }}
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm">
+                <div class="w-6 h-6 rounded" [style.background-color]="categoria.color"></div>
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm">
+                @if (categoria.activo) {
+                  <div
+                    class="inline-flex items-center justify-center w-6 h-6 border-2 border-green-500 rounded"
+                  >
+                    <svg
+                      class="w-4 h-4 text-green-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="3"
+                        d="M5 13l4 4L19 7"
+                      ></path>
+                    </svg>
+                  </div>
+                } @else {
+                  <div
+                    class="inline-flex items-center justify-center w-6 h-6 bg-red-500 rounded-full"
+                  >
+                    <svg
+                      class="w-4 h-4 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      ></path>
+                    </svg>
+                  </div>
+                }
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm">
+                <div class="flex gap-1">
+                  <!-- Edit Button -->
+                  <button
+                    (click)="openModal(categoria)"
+                    class="p-1.5 bg-green-100 hover:bg-green-200 rounded transition-colors"
+                    [title]="'BUTTON_SAVE' | translate"
+                  >
+                    <svg
+                      class="w-4 h-4 text-green-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      ></path>
+                    </svg>
+                  </button>
+                  <!-- Delete Button -->
+                  <button
+                    (click)="deleteCategory(categoria._id)"
+                    class="p-1.5 bg-red-100 hover:bg-red-200 rounded transition-colors"
+                    [title]="'BUTTON_CANCEL' | translate"
+                  >
+                    <svg
+                      class="w-4 h-4 text-red-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <div class="flex flex-col items-center justify-center p-12 bg-white border border-gray-200 border-dashed rounded-2xl shadow-sm text-center">
+      <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4 border border-gray-100">
+        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        </svg>
+      </div>
+      <h3 class="text-lg font-bold text-gray-900 mb-1">{{ 'EMPTY_STATE_TITLE_CATS' | translate }}</h3>
+      <p class="text-sm text-gray-500 max-w-sm mb-6">
+        {{ 'EMPTY_STATE_NO_CATEGORIES' | translate }}
+      </p>
+      <button
+        (click)="openModal()"
+        class="px-4 py-2 bg-green-200 text-gray-900 text-sm font-medium rounded-xl hover:bg-green-300 transition-colors shadow-sm"
+      >
+        {{ 'EMPTY_STATE_ADD_CAT' | translate }}
+      </button>
+    </div>
+  }
 </div>
 
 <app-category-modal

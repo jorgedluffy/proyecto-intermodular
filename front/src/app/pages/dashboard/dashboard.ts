@@ -3,16 +3,23 @@ import { CommonModule } from '@angular/common';
 import { ExpenseService, Gasto } from '../../services/expense.service';
 import { CategoryService } from '../../services/category.service';
 import { ExpenseModalComponent } from '../../components/expense-modal/expense-modal';
+import { ToastService } from '../../components/toast/toast.service';
+import { ConfirmService } from '../../components/confirm/confirm.service';
+import { ConfigService } from '../../services/config.service';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, ExpenseModalComponent],
+  imports: [CommonModule, ExpenseModalComponent, TranslatePipe],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
 export class Dashboard implements OnInit {
   private expenseService = inject(ExpenseService);
   private categoryService = inject(CategoryService);
+  private toastService = inject(ToastService);
+  private confirmService = inject(ConfirmService);
+  public configService = inject(ConfigService);
 
   expenses = this.expenseService.expenses;
   categories = this.categoryService.categories;
@@ -82,10 +89,17 @@ export class Dashboard implements OnInit {
 
   onSaveExpense(expenseData: Partial<Gasto>) {
     const observer = {
-      next: () => this.closeModal(),
+      next: () => {
+        this.closeModal();
+        this.toastService.success(
+          this.selectedExpense 
+            ? this.configService.translate('TOAST_EDIT_EXP_SUCCESS') 
+            : this.configService.translate('TOAST_ADD_EXP_SUCCESS')
+        );
+      },
       error: (err: any) => {
         console.error(err);
-        alert('Error al guardar: ' + (err.error?.error || err.message));
+        this.toastService.error(this.configService.translate('TOAST_ERROR') + ': ' + (err.error?.error || err.message));
       }
     };
 
@@ -96,9 +110,19 @@ export class Dashboard implements OnInit {
     }
   }
 
-  deleteExpense(id: string | undefined) {
-    if (id && confirm('¿Estás seguro de que quieres eliminar este movimiento?')) {
-      this.expenseService.deleteExpense(id).subscribe();
+  async deleteExpense(id: string | undefined) {
+    if (!id) return;
+    const confirmed = await this.confirmService.ask(this.configService.translate('CONFIRM_DELETE_EXPENSE'));
+    if (confirmed) {
+      this.expenseService.deleteExpense(id).subscribe({
+        next: () => {
+          this.toastService.success(this.configService.translate('TOAST_DELETE_EXP_SUCCESS'));
+        },
+        error: (err: any) => {
+          console.error(err);
+          this.toastService.error(this.configService.translate('TOAST_ERROR') + ': ' + (err.error?.error || err.message));
+        }
+      });
     }
   }
 
@@ -107,19 +131,15 @@ export class Dashboard implements OnInit {
     if (file) {
       this.expenseService.importFile(file).subscribe({
         next: (res: any) => {
-          alert('Importación exitosa: ' + res.total + ' registros importados');
+          this.toastService.success(this.configService.translate('TOAST_IMPORT_SUCCESS'));
         },
         error: (err: any) => {
           console.error(err);
-          alert('Error en la importación: ' + (err.error?.error || err.message));
+          this.toastService.error(this.configService.translate('TOAST_IMPORT_ERROR') + ': ' + (err.error?.error || err.message));
         }
       });
     }
     event.target.value = null; // reset to allow selecting the same file again
-  }
-
-  exportData() {
-    this.expenseService.exportFile();
   }
 
   updateSearchTerm(event: Event) {

@@ -1,12 +1,13 @@
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Categoria } from '../../services/category.service';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-category-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe],
   templateUrl: './category-modal.html',
 })
 export class CategoryModalComponent implements OnChanges {
@@ -43,5 +44,12 @@ export class CategoryModalComponent implements OnChanges {
   onClose() {
     this.close.emit();
     this.categoryForm.reset({ color: '#cbd5e1', activo: true });
+  }
+
+  @HostListener('document:keydown.escape')
+  handleEscapeKey() {
+    if (this.isOpen) {
+      this.onClose();
+    }
   }
 }

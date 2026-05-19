@@ -1,7 +1,8 @@
-import { Injectable, signal, inject, computed } from '@angular/core';
+import { Injectable, signal, inject, computed, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { Categoria } from './category.service';
+import { ConfigService } from './config.service';
 
 export interface Gasto {
   _id?: string;
@@ -17,10 +18,20 @@ export interface Gasto {
 @Injectable({ providedIn: 'root' })
 export class ExpenseService {
   private http = inject(HttpClient);
+  private configService = inject(ConfigService);
   private apiUrl = 'http://localhost:5000/gastos';
 
   private expensesSignal = signal<Gasto[]>([]);
   public expenses = computed(() => this.expensesSignal());
+
+  constructor() {
+    // Escuchar reactivamente los cambios en idioma o moneda para recargar
+    effect(() => {
+      this.configService.language();
+      this.configService.currency();
+      this.loadExpenses();
+    });
+  }
 
   loadExpenses(): void {
     this.http.get<Gasto[]>(this.apiUrl).subscribe(data => {
@@ -64,7 +75,4 @@ export class ExpenseService {
     );
   }
 
-  exportFile(): void {
-    window.open('http://localhost:5000/descargarCsv', '_blank');
-  }
 }
