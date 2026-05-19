@@ -1,13 +1,14 @@
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Gasto } from '../../services/expense.service';
 import { Categoria } from '../../services/category.service';
+import { TranslatePipe } from '../../pipes/translate.pipe';
 
 @Component({
   selector: 'app-expense-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe],
   templateUrl: './expense-modal.html',
 })
 export class ExpenseModalComponent implements OnChanges {
@@ -61,5 +62,12 @@ export class ExpenseModalComponent implements OnChanges {
   onClose() {
     this.close.emit();
     this.expenseForm.reset({ tipo: 'Gasto', source: 'Manual', fecha: new Date().toISOString().split('T')[0], nota: 'Sin nota' });
+  }
+
+  @HostListener('document:keydown.escape')
+  handleEscapeKey() {
+    if (this.isOpen) {
+      this.onClose();
+    }
   }
 }

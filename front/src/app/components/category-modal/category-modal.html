@@ -1,34 +1,34 @@
 @if (isOpen) {
-  <div class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
+  <div (click)="onClose()" class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 animate-fade-in">
+    <div (click)="$event.stopPropagation()" class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md animate-scale-up">
       <h2 class="text-xl font-bold text-gray-900 mb-4">
-        {{ categoryToEdit ? 'Edit Category' : 'Add Category' }}
+        {{ categoryToEdit ? ('MODAL_EDIT_CATEGORY' | translate) : ('MODAL_ADD_CATEGORY' | translate) }}
       </h2>
       
       <form [formGroup]="categoryForm" (ngSubmit)="onSave()" class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'INPUT_NAME' | translate }}</label>
           <input 
             type="text" 
             formControlName="nombre"
             class="px-4 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 w-full"
-            placeholder="Ej. Comida"
+            [placeholder]="'LABEL_CAT_PLACEHOLDER' | translate"
           />
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'INPUT_DESCRIPTION' | translate }}</label>
           <textarea 
             formControlName="descripcion"
             rows="3"
             class="px-4 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 w-full resize-none"
-            placeholder="Descripción opcional"
+            [placeholder]="'LABEL_CAT_DESC_PLACEHOLDER' | translate"
           ></textarea>
         </div>
 
         <div class="flex items-center gap-4">
           <div class="flex-1">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Color</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'INPUT_COLOR' | translate }}</label>
             <div class="flex items-center gap-2">
               <input 
                 type="color" 
@@ -46,7 +46,7 @@
               id="activo-checkbox"
               class="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
             />
-            <label for="activo-checkbox" class="text-sm font-medium text-gray-700">Activo</label>
+            <label for="activo-checkbox" class="text-sm font-medium text-gray-700">{{ 'LABEL_ACTIVE' | translate }}</label>
           </div>
         </div>
 
@@ -56,14 +56,14 @@
             (click)="onClose()"
             class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded hover:bg-gray-200 transition-colors"
           >
-            Cancelar
+            {{ 'BUTTON_CANCEL' | translate }}
           </button>
           <button 
             type="submit" 
             [disabled]="categoryForm.invalid"
             class="px-4 py-2 bg-green-200 text-gray-900 text-sm font-medium rounded hover:bg-green-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Guardar
+            {{ 'BUTTON_SAVE' | translate }}
           </button>
         </div>
       </form>
