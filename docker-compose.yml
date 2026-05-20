@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # 1. Servicio de Base de Datos (MongoDB)
+  mongo:
+    image: mongo:latest
+    container_name: mongodb_container
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db # Para que los datos no se borren al apagar el contenedor
+    networks:
+      - red-proyecto
+
+  # 2. Servicio del Backend (Node.js)
+  backend:
+    build: ./backend
+    container_name: backend_container
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mi_base_de_datos # URL apuntando al contenedor "mongo"
+      - PORT=3000
+    depends_on:
+      - mongo # Espera a que mongo inicie antes de arrancar el backend
+    networks:
+      - red-proyecto
+
+  # 3. Servicio del Frontend (Angular + Nginx)
+  frontend:
+    build: ./frontend
+    container_name: frontend_container
+    ports:
+      - "80:80" # Cualquiera accederá desde el puerto 80 (http://localhost)
+    depends_on:
+      - backend
+    networks:
+      - red-proyecto
+
+volumes:
+  mongo-data:
+
+networks:
+  red-proyecto:
+    driver: bridge
