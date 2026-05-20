@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 app.use(localization);
 
 // Conexión a MongoDB
-mongoose.connect('mongodb://localhost:27017/gastos', {
+mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/gastos', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => console.log('Conectado a MongoDB'))
@@ -217,7 +217,7 @@ app.delete('/gastos/:id', async (req, res) => {
 });
 
 // Iniciar el servidor
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

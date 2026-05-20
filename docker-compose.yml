@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # 1. Servicio de Base de Datos (MongoDB)
   mongo:
@@ -14,13 +12,13 @@ services:
 
   # 2. Servicio del Backend (Node.js)
   backend:
-    build: ./backend
+    build: ./back
     container_name: backend_container
     ports:
-      - "3000:3000"
+      - "5000:5000"
     environment:
-      - MONGO_URI=mongodb://mongo:27017/mi_base_de_datos # URL apuntando al contenedor "mongo"
-      - PORT=3000
+      - MONGO_URI=mongodb://mongo:27017/gastos
+      - PORT=5000
     depends_on:
       - mongo # Espera a que mongo inicie antes de arrancar el backend
     networks:
@@ -28,7 +26,7 @@ services:
 
   # 3. Servicio del Frontend (Angular + Nginx)
   frontend:
-    build: ./frontend
+    build: ./front
     container_name: frontend_container
     ports:
       - "80:80" # Cualquiera accederá desde el puerto 80 (http://localhost)
