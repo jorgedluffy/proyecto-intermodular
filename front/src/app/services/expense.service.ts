@@ -75,4 +75,10 @@ export class ExpenseService {
     );
   }
 
+  downloadExpenses(): Observable<Blob> {
+    return this.http.get('http://localhost:5000/descargarCsv', {
+      responseType: 'blob'
+    });
+  }
+
 }

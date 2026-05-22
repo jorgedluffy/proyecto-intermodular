@@ -68,20 +68,20 @@ app.post('/categorias', async (req, res) => {
     try {
         const { nombre, color, descripcion, activo } = req.body;
 
-        // Normalizar para que soporte tanto objeto como string simple
-        const nombreObj = typeof nombre === 'object' ? nombre : { es: nombre.trim(), en: nombre.trim() };
-        const descripcionObj = typeof descripcion === 'object' ? descripcion : { es: descripcion || '', en: descripcion || '' };
+        if (!nombre || typeof nombre !== 'string' || !nombre.trim()) {
+            return res.status(400).json({ error: 'El nombre es obligatorio' });
+        }
 
-        // Validar si ya existe la categoría por nombre en español
-        const categoriaExistente = await Categoria.findOne({ 'nombre.es': nombreObj.es });
+        // Validar si ya existe la categoría
+        const categoriaExistente = await Categoria.findOne({ nombre: nombre.trim() });
         if (categoriaExistente) {
             return res.status(400).json({ error: 'La categoría ya existe' });
         }
 
         const nuevaCategoria = new Categoria({ 
-            nombre: nombreObj, 
+            nombre: nombre.trim(), 
             color: color, 
-            descripcion: descripcionObj, 
+            descripcion: descripcion || '', 
             activo: activo 
         });
         await nuevaCategoria.save();
@@ -164,16 +164,13 @@ app.put('/categorias/:id', async (req, res) => {
         const { id } = req.params;
         const { nombre, color, descripcion, activo } = req.body;
 
-        if (!nombre) {
+        if (!nombre || typeof nombre !== 'string' || !nombre.trim()) {
             return res.status(400).json({ error: 'El nombre es obligatorio' });
         }
 
-        const nombreObj = typeof nombre === 'object' ? nombre : { es: nombre.trim(), en: nombre.trim() };
-        const descripcionObj = typeof descripcion === 'object' ? descripcion : { es: descripcion || '', en: descripcion || '' };
-
         const categoriaActualizada = await Categoria.findByIdAndUpdate(
             id,
-            { nombre: nombreObj, color, descripcion: descripcionObj, activo },
+            { nombre: nombre.trim(), color, descripcion: descripcion || '', activo },
             { new: true }
         );
         if (!categoriaActualizada) {

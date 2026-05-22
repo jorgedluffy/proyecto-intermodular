@@ -1,4 +1,4 @@
-import { Injectable, signal, inject, computed, effect } from '@angular/core';
+import { Injectable, signal, inject, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { ConfigService } from './config.service';
@@ -21,11 +21,7 @@ export class CategoryService {
   public categories = computed(() => this.categoriesSignal());
 
   constructor() {
-    // Escuchar reactivamente los cambios en idioma para recargar
-    effect(() => {
-      this.configService.language();
-      this.loadCategories();
-    });
+    this.loadCategories();
   }
 
   loadCategories(): void {
@@ -60,3 +56,4 @@ export class CategoryService {
     );
   }
 }
+

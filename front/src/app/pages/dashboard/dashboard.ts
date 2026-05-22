@@ -77,6 +77,16 @@ export class Dashboard implements OnInit {
     return typeof categoria === 'object' ? categoria.nombre : categoria;
   }
 
+  getCategoryColor(categoria: any): string {
+    const defaultColor = '#e5e7eb';
+    if (!categoria) return defaultColor; 
+    if (typeof categoria === 'object' && categoria.color) {
+      return categoria.color;
+    }
+    return defaultColor; 
+  }
+
+
   openModal(expense: Gasto | null = null) {
     this.selectedExpense = expense;
     this.isModalOpen = true;
@@ -140,6 +150,24 @@ export class Dashboard implements OnInit {
       });
     }
     event.target.value = null; // reset to allow selecting the same file again
+  }
+
+  downloadExpenses() {
+    this.expenseService.downloadExpenses().subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `gastos_${new Date().toISOString().split('T')[0]}.csv`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+        this.toastService.success(this.configService.translate('TOAST_DOWNLOAD_SUCCESS'));
+      },
+      error: (err: any) => {
+        console.error(err);
+        this.toastService.error(this.configService.translate('TOAST_DOWNLOAD_ERROR') + ': ' + (err.error?.error || err.message));
+      }
+    });
   }
 
   updateSearchTerm(event: Event) {

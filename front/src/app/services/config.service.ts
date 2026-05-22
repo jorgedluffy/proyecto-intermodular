@@ -29,6 +29,7 @@ export class ConfigService {
       
       "BUTTON_ADD_TRANSACTION": "Añadir Transacción",
       "BUTTON_IMPORT_DATA": "Importar Datos",
+      "BUTTON_DOWNLOAD_DATA": "Descargar Datos",
       "BUTTON_ADD_CATEGORY": "Añadir Categoría",
       "BUTTON_FILTERS": "Filtros",
       "BUTTON_CLEAN_FILTERS": "Limpiar Filtros",
@@ -113,7 +114,9 @@ export class ConfigService {
       "TOAST_EDIT_EXP_SUCCESS": "Transacción actualizada correctamente",
       "TOAST_DELETE_EXP_SUCCESS": "Transacción eliminada correctamente",
       "TOAST_IMPORT_SUCCESS": "Datos importados correctamente",
-      "TOAST_IMPORT_ERROR": "Error al importar el archivo CSV"
+      "TOAST_IMPORT_ERROR": "Error al importar el archivo CSV",
+      "TOAST_DOWNLOAD_SUCCESS": "Datos descargados correctamente",
+      "TOAST_DOWNLOAD_ERROR": "Error al descargar los datos"
     },
     en: {
       "NAV_TRANSACTIONS": "Transactions",
@@ -122,6 +125,7 @@ export class ConfigService {
       
       "BUTTON_ADD_TRANSACTION": "Add Transaction",
       "BUTTON_IMPORT_DATA": "Import Data",
+      "BUTTON_DOWNLOAD_DATA": "Download Data",
       "BUTTON_ADD_CATEGORY": "Add Category",
       "BUTTON_FILTERS": "Filters",
       "BUTTON_CLEAN_FILTERS": "Clear Filters",
@@ -206,7 +210,9 @@ export class ConfigService {
       "TOAST_EDIT_EXP_SUCCESS": "Transaction updated successfully",
       "TOAST_DELETE_EXP_SUCCESS": "Transaction deleted successfully",
       "TOAST_IMPORT_SUCCESS": "Data imported successfully",
-      "TOAST_IMPORT_ERROR": "Error importing CSV file"
+      "TOAST_IMPORT_ERROR": "Error importing CSV file",
+      "TOAST_DOWNLOAD_SUCCESS": "Data downloaded successfully",
+      "TOAST_DOWNLOAD_ERROR": "Error downloading data"
     }
   };
 

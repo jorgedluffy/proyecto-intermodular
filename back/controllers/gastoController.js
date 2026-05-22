@@ -42,9 +42,13 @@ const cargarCsv = async (req, res) => {
                             throw new Error(`Cantidad inválida: ${cantidad}`);
                         }
 
-                        let categoriaDoc = await Categoria.findOne({ nombre: categoria });
+                        // Buscar categoría por nombre 
+                        let categoriaDoc = await Categoria.findOne({ 'nombre': categoria });
                         if (!categoriaDoc) {
-                            categoriaDoc = new Categoria({ nombre: categoria });
+                            // Si no existe, crear la categoría con nombre 
+                            categoriaDoc = new Categoria({ 
+                                nombre: categoria
+                            });
                             await categoriaDoc.save();
                         }
 
@@ -91,7 +95,14 @@ const descargarCsv = async (req, res) => {
         }));
 
         const csv = Papa.unparse(dataProcesada, { delimiter: ";" });
-        const filePath = path.join(__dirname, '../temp/gastos.csv');
+        const tempDir = path.join(__dirname, '../temp');
+        
+        // Crear directorio temp si no existe
+        if (!fs.existsSync(tempDir)) {
+            fs.mkdirSync(tempDir, { recursive: true });
+        }
+        
+        const filePath = path.join(tempDir, 'gastos.csv');
 
         fs.writeFileSync(filePath, "\uFEFF" + csv, 'utf8');
 
