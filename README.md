@@ -62,7 +62,7 @@ Adicionalmente, existe una creciente preocupación entre los usuarios respecto a
 
 **HomeBudget** es una aplicación web de gestión de finanzas personales que permite:
 
-1. **Importación y transformación de datos**: Procesar extractos bancarios del BBVA en formato CSV, convirtiéndolos en un modelo de datos normalizado y comprensible.
+1. **Importación y transformación de datos**: Procesar extractos bancarios en formato CSV genérico, convirtiéndolos en un modelo de datos normalizado y comprensible.
 2. **Gestión interactiva de movimientos**: Visualizar, crear, editar y eliminar transacciones financieras (gastos e ingresos) a través de una interfaz clara e intuitiva.
 3. **Categorización de movimientos**: Organizar transacciones en categorías personalizables (Alimentación, Transporte, Entretenimiento, etc.) para facilitar el análisis.
 4. **Análisis visual mediante gráficos**: Mostrar la distribución y evolución de gastos con gráficos interactivos (pie chart, gráfico de líneas) que permiten filtrado por período, categoría y tipo de movimiento.
@@ -86,13 +86,13 @@ La creación de HomeBudget responde a la necesidad de ofrecer una solución que 
 
 ### 2.1 Análisis de Soluciones Previas
 
-| Solución | Características principales | Limitaciones |
-|---|---|---|
-| **Fintonic** | Categorización automática de gastos, análisis detallado, alertas de fraude, integración con bancos españoles | Requiere sincronización con cuentas bancarias (envío de credenciales a servidores), política de privacidad menos transparente, dependencia de servidores externos |
-| **MoneyWiz** | Sincronización multi-cuenta, presupuestos personalizables, reportes detallados, multiplataforma | Modelo de suscripción para acceso completo, sincronización con terceros, interfaz compleja para usuarios no técnicos |
-| **Mint** (Intuit) | Referente en gestión de finanzas personales con categorización automática y análisis avanzados | Discontinuada por Intuit en 2024 en EE.UU., migración forzada a Credit Karma, historial de cambios de políticas que afectaron a usuarios |
-| **Excel / Google Sheets** | Completamente personalizable, sin coste adicional | Completamente manual, sin visualización automática, requiere conocimientos técnicos |
-| **Apps bancarias nativas** | Acceso directo a los datos de la cuenta | Limitadas a un único banco, interfaces no optimizadas para análisis comparativos |
+| Solución                   | Características principales                                                                                  | Limitaciones                                                                                                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Fintonic**               | Categorización automática de gastos, análisis detallado, alertas de fraude, integración con bancos españoles | Requiere sincronización con cuentas bancarias (envío de credenciales a servidores), política de privacidad menos transparente, dependencia de servidores externos |
+| **MoneyWiz**               | Sincronización multi-cuenta, presupuestos personalizables, reportes detallados, multiplataforma              | Modelo de suscripción para acceso completo, sincronización con terceros, interfaz compleja para usuarios no técnicos                                              |
+| **Mint** (Intuit)          | Referente en gestión de finanzas personales con categorización automática y análisis avanzados               | Discontinuada por Intuit en 2024 en EE.UU., migración forzada a Credit Karma, historial de cambios de políticas que afectaron a usuarios                          |
+| **Excel / Google Sheets**  | Completamente personalizable, sin coste adicional                                                            | Completamente manual, sin visualización automática, requiere conocimientos técnicos                                                                               |
+| **Apps bancarias nativas** | Acceso directo a los datos de la cuenta                                                                      | Limitadas a un único banco, interfaces no optimizadas para análisis comparativos                                                                                  |
 
 ### 2.2 Estado del Arte
 
@@ -149,47 +149,47 @@ La solución HomeBudget se estructura en torno a cinco módulos funcionales prin
 
 #### 3.1.5 Módulo de Importación/Exportación
 
-- Importar archivos CSV (formato BBVA con separador `;`), transformando columnas en campos del modelo interno.
+- Importar archivos CSV (formato genérico), transformando columnas en campos del modelo interno.
 - Creación automática de categorías no existentes durante la importación.
 - Validación de datos importados (detección de filas inválidas, validación de tipos numéricos).
-- Conversión automática de formato de fecha (`dd/mm/yyyy` → `yyyy-mm-dd`).
+- Conversión automática de formato de fecha (formatos soportados: `dd/mm/yyyy`, `yyyy-mm-dd`).
 - Exportar todos los movimientos registrados a formato CSV con encoding UTF-8 + BOM para compatibilidad con Excel.
 
 ### 3.2 Requisitos
 
 #### 3.2.1 Requisitos Funcionales
 
-| ID | Requisito | Descripción | Prioridad | Implementado |
-|---|---|---|---|---|
-| RF1 | Visualización de movimientos | El dashboard debe mostrar una tabla con todos los gastos e ingresos registrados, permitiendo ordenar por columnas | ALTA | ✅ Sí |
-| RF2 | Crear gasto/ingreso | El usuario debe poder añadir nuevos movimientos mediante modal con campos: descripción, nota, tipo, cantidad, categoría, fecha, origen | ALTA | ✅ Sí |
-| RF3 | Editar gasto/ingreso | El usuario debe poder editar movimientos existentes a través de una modal de edición | ALTA | ✅ Sí |
-| RF4 | Eliminar gasto/ingreso | El usuario debe poder eliminar movimientos con confirmación previa | ALTA | ✅ Sí |
-| RF5 | Visualizar categorías | El sistema debe mostrar un listado de todas las categorías disponibles | ALTA | ✅ Sí |
-| RF6 | Crear categoría | El usuario debe poder crear nuevas categorías con nombre, descripción, color e icono | MEDIA | ✅ Sí |
-| RF7 | Editar categoría | El usuario debe poder editar categorías existentes | MEDIA | ✅ Sí |
-| RF8 | Eliminar categoría | El usuario debe poder eliminar categorías (si no tienen gastos asociados) | MEDIA | ✅ Sí |
-| RF9 | Filtrado de gastos | El usuario debe poder aplicar filtros por período de tiempo e importe | MEDIA | ✅ Sí |
-| RF10 | Visualización de gráficos | El sistema debe generar gráficos de distribución y evolución con KPIs financieros | MEDIA | ✅ Sí |
-| RF11 | Importar CSV | El usuario debe poder cargar archivos CSV que se transforman en gastos con auto-creación de categorías | MEDIA | ✅ Sí |
-| RF12 | Exportar datos | El usuario debe poder descargar los gastos registrados en formato CSV | BAJA | ✅ Sí |
-| RF13 | Navegación | El sistema debe disponer de menú de navegación para acceder a todas las secciones | ALTA | ✅ Sí |
-| RF14 | Notificaciones | El sistema debe mostrar notificaciones (toast) de éxito/error en operaciones | MEDIA | ✅ Sí |
+| ID   | Requisito                    | Descripción                                                                                                                            | Prioridad | Implementado |
+| ---- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------------ |
+| RF1  | Visualización de movimientos | El dashboard debe mostrar una tabla con todos los gastos e ingresos registrados, permitiendo ordenar por columnas                      | ALTA      | ✅ Sí        |
+| RF2  | Crear gasto/ingreso          | El usuario debe poder añadir nuevos movimientos mediante modal con campos: descripción, nota, tipo, cantidad, categoría, fecha, origen | ALTA      | ✅ Sí        |
+| RF3  | Editar gasto/ingreso         | El usuario debe poder editar movimientos existentes a través de una modal de edición                                                   | ALTA      | ✅ Sí        |
+| RF4  | Eliminar gasto/ingreso       | El usuario debe poder eliminar movimientos con confirmación previa                                                                     | ALTA      | ✅ Sí        |
+| RF5  | Visualizar categorías        | El sistema debe mostrar un listado de todas las categorías disponibles                                                                 | ALTA      | ✅ Sí        |
+| RF6  | Crear categoría              | El usuario debe poder crear nuevas categorías con nombre, descripción, color e icono                                                   | MEDIA     | ✅ Sí        |
+| RF7  | Editar categoría             | El usuario debe poder editar categorías existentes                                                                                     | MEDIA     | ✅ Sí        |
+| RF8  | Eliminar categoría           | El usuario debe poder eliminar categorías (si no tienen gastos asociados)                                                              | MEDIA     | ✅ Sí        |
+| RF9  | Filtrado de gastos           | El usuario debe poder aplicar filtros por período de tiempo e importe                                                                  | MEDIA     | ✅ Sí        |
+| RF10 | Visualización de gráficos    | El sistema debe generar gráficos de distribución y evolución con KPIs financieros                                                      | MEDIA     | ✅ Sí        |
+| RF11 | Importar CSV                 | El usuario debe poder cargar archivos CSV que se transforman en gastos con auto-creación de categorías                                 | MEDIA     | ✅ Sí        |
+| RF12 | Exportar datos               | El usuario debe poder descargar los gastos registrados en formato CSV                                                                  | BAJA      | ✅ Sí        |
+| RF13 | Navegación                   | El sistema debe disponer de menú de navegación para acceder a todas las secciones                                                      | ALTA      | ✅ Sí        |
+| RF14 | Notificaciones               | El sistema debe mostrar notificaciones (toast) de éxito/error en operaciones                                                           | MEDIA     | ✅ Sí        |
 
 #### 3.2.2 Requisitos No Funcionales
 
-| ID | Requisito | Descripción | Prioridad | Implementado |
-|---|---|---|---|---|
-| RNF1 | Rendimiento | El sistema debe responder a peticiones en menos de 2 segundos en condiciones normales | ALTA | ✅ Sí |
-| RNF2 | Responsividad | La interfaz debe adaptarse correctamente a dispositivos de diferentes tamaños (desktop, tablet, móvil) | ALTA | ⚠️ Parcial |
-| RNF3 | Usabilidad | La interfaz debe ser intuitiva sin requerir documentación compleja; apta para usuarios no técnicos | ALTA | ✅ Sí |
-| RNF4 | Persistencia | Todos los datos deben almacenarse en base de datos MongoDB y ser recuperables tras cerrar sesión | ALTA | ✅ Sí |
-| RNF5 | Privacidad | Los datos deben procesarse y almacenarse localmente sin enviar información a servidores de terceros | ALTA | ✅ Sí |
-| RNF6 | Compatibilidad | La aplicación debe funcionar en navegadores modernos (Chrome, Firefox, Safari, Edge) versiones recientes | MEDIA | ✅ Sí |
-| RNF7 | Mantenibilidad | El código debe estructurarse en módulos reutilizables, con comentarios y documentación | MEDIA | ⚠️ Parcial |
-| RNF8 | Seguridad | Las validaciones en frontend deben replicarse en backend; sanitización de inputs | MEDIA | ⚠️ Parcial |
-| RNF9 | Escalabilidad | La arquitectura debe permitir futuras ampliaciones (nuevos módulos, nuevas fuentes de datos) | BAJA | ✅ Sí |
-| RNF10 | Internacionalización | La interfaz debe soportar múltiples idiomas (español e inglés) y monedas (EUR, USD, GBP) | BAJA | ✅ Sí |
+| ID    | Requisito            | Descripción                                                                                              | Prioridad | Implementado |
+| ----- | -------------------- | -------------------------------------------------------------------------------------------------------- | --------- | ------------ |
+| RNF1  | Rendimiento          | El sistema debe responder a peticiones en menos de 2 segundos en condiciones normales                    | ALTA      | ✅ Sí        |
+| RNF2  | Responsividad        | La interfaz debe adaptarse correctamente a dispositivos de diferentes tamaños (desktop, tablet, móvil)   | ALTA      | ⚠️ Parcial   |
+| RNF3  | Usabilidad           | La interfaz debe ser intuitiva sin requerir documentación compleja; apta para usuarios no técnicos       | ALTA      | ✅ Sí        |
+| RNF4  | Persistencia         | Todos los datos deben almacenarse en base de datos MongoDB y ser recuperables tras cerrar sesión         | ALTA      | ✅ Sí        |
+| RNF5  | Privacidad           | Los datos deben procesarse y almacenarse localmente sin enviar información a servidores de terceros      | ALTA      | ✅ Sí        |
+| RNF6  | Compatibilidad       | La aplicación debe funcionar en navegadores modernos (Chrome, Firefox, Safari, Edge) versiones recientes | MEDIA     | ✅ Sí        |
+| RNF7  | Mantenibilidad       | El código debe estructurarse en módulos reutilizables, con comentarios y documentación                   | MEDIA     | ⚠️ Parcial   |
+| RNF8  | Seguridad            | Las validaciones en frontend deben replicarse en backend; sanitización de inputs                         | MEDIA     | ⚠️ Parcial   |
+| RNF9  | Escalabilidad        | La arquitectura debe permitir futuras ampliaciones (nuevos módulos, nuevas fuentes de datos)             | BAJA      | ✅ Sí        |
+| RNF10 | Internacionalización | La interfaz debe soportar múltiples idiomas (español e inglés) y monedas (EUR, USD, GBP)                 | BAJA      | ✅ Sí        |
 
 ---
 
@@ -209,6 +209,7 @@ La solución HomeBudget se estructura en torno a cinco módulos funcionales prin
 6. **Adecuación al proyecto**: Perfecto para desarrollo en equipo pequeño (dos personas) con prioridades cambiantes.
 
 **Herramientas de gestión utilizadas:**
+
 - **Trello**: Tablero Kanban con columnas To Do, In Progress, Testing, Done.
 - **Git + GitHub**: Control de versiones con ramas por funcionalidad (feature branches).
 
@@ -221,26 +222,26 @@ graph TB
     subgraph "CAPA DE PRESENTACIÓN"
         A["Frontend — Angular 21<br>SPA + TailwindCSS v4"]
     end
-    
+
     subgraph "CAPA DE LÓGICA DE NEGOCIO"
         B["Backend — Node.js 22<br>Express 4 + Mongoose 7"]
     end
-    
+
     subgraph "CAPA DE PERSISTENCIA"
         C["Base de Datos<br>MongoDB (latest)"]
     end
-    
+
     A -->|"HTTP/REST<br>JSON + Headers i18n"| B
     B -->|"Mongoose ODM<br>Schemas + Validaciones"| C
 ```
 
 La aplicación sigue una arquitectura de **tres capas** claramente diferenciadas, conectadas mediante una API REST y desplegadas como microservicios mediante Docker Compose:
 
-| Capa | Tecnología | Puerto | Responsabilidad |
-|---|---|---|---|
-| Presentación | Angular 21 + Nginx | 80 | Interfaz de usuario, lógica de presentación, routing SPA |
-| Lógica de Negocio | Node.js + Express 4 | 5000 | API REST, validaciones, transformaciones, CSV I/O |
-| Persistencia | MongoDB | 27017 | Almacenamiento documental, índices, referencias |
+| Capa              | Tecnología          | Puerto | Responsabilidad                                          |
+| ----------------- | ------------------- | ------ | -------------------------------------------------------- |
+| Presentación      | Angular 21 + Nginx  | 80     | Interfaz de usuario, lógica de presentación, routing SPA |
+| Lógica de Negocio | Node.js + Express 4 | 5000   | API REST, validaciones, transformaciones, CSV I/O        |
+| Persistencia      | MongoDB             | 27017  | Almacenamiento documental, índices, referencias          |
 
 #### 4.2.2 Backend (Node.js + Express)
 
@@ -266,18 +267,18 @@ La aplicación sigue una arquitectura de **tres capas** claramente diferenciadas
 
 **Rutas API REST:**
 
-| Método | Ruta | Descripción | Validación |
-|---|---|---|---|
-| `GET` | `/gastos` | Listar gastos (con filtros opcionales: categoría, cantidad, fechas) | — |
-| `POST` | `/gastos` | Crear nuevo gasto | Campos obligatorios + Populate categoría |
-| `PUT` | `/gastos/:id` | Actualizar gasto existente | Campos obligatorios + Not Found |
-| `DELETE` | `/gastos/:id` | Eliminar gasto | Not Found |
-| `GET` | `/categorias` | Listar todas las categorías | — |
-| `POST` | `/categorias` | Crear nueva categoría | Nombre obligatorio + Duplicados |
-| `PUT` | `/categorias/:id` | Actualizar categoría | Nombre obligatorio + Not Found |
-| `DELETE` | `/categorias/:id` | Eliminar categoría | Not Found |
-| `POST` | `/cargarCsv` | Importar archivo CSV (multipart/form-data) | Archivo requerido + MIME type |
-| `GET` | `/descargarCsv` | Descargar todos los gastos en CSV | — |
+| Método   | Ruta              | Descripción                                                         | Validación                               |
+| -------- | ----------------- | ------------------------------------------------------------------- | ---------------------------------------- |
+| `GET`    | `/gastos`         | Listar gastos (con filtros opcionales: categoría, cantidad, fechas) | —                                        |
+| `POST`   | `/gastos`         | Crear nuevo gasto                                                   | Campos obligatorios + Populate categoría |
+| `PUT`    | `/gastos/:id`     | Actualizar gasto existente                                          | Campos obligatorios + Not Found          |
+| `DELETE` | `/gastos/:id`     | Eliminar gasto                                                      | Not Found                                |
+| `GET`    | `/categorias`     | Listar todas las categorías                                         | —                                        |
+| `POST`   | `/categorias`     | Crear nueva categoría                                               | Nombre obligatorio + Duplicados          |
+| `PUT`    | `/categorias/:id` | Actualizar categoría                                                | Nombre obligatorio + Not Found           |
+| `DELETE` | `/categorias/:id` | Eliminar categoría                                                  | Not Found                                |
+| `POST`   | `/cargarCsv`      | Importar archivo CSV (multipart/form-data)                          | Archivo requerido + MIME type            |
+| `GET`    | `/descargarCsv`   | Descargar todos los gastos en CSV                                   | —                                        |
 
 #### 4.2.3 Frontend (Angular 21)
 
@@ -289,19 +290,19 @@ La aplicación sigue una arquitectura de **tres capas** claramente diferenciadas
 graph TD
     App["AppComponent<br>(Layout principal)"] --> Navbar["NavbarComponent<br>(Navegación superior)"]
     App --> Router["RouterOutlet<br>(Contenido dinámico)"]
-    
+
     Router --> Dashboard["DashboardPage<br>(Tabla de movimientos)"]
     Router --> Categories["CategoriesPage<br>(Gestión de categorías)"]
     Router --> Overview["OverviewPage<br>(Gráficos y KPIs)"]
-    
+
     Dashboard --> ExpenseModal["ExpenseModalComponent<br>(Crear/Editar gasto)"]
     Dashboard --> Confirm["ConfirmComponent<br>(Diálogo confirmación)"]
     Dashboard --> Toast["ToastComponent<br>(Notificaciones)"]
-    
+
     Categories --> CategoryModal["CategoryModalComponent<br>(Crear/Editar categoría)"]
     Categories --> Confirm2["ConfirmComponent"]
     Categories --> Toast2["ToastComponent"]
-    
+
     Overview --> Charts["Chart.js<br>(ng2-charts)"]
 ```
 
@@ -377,6 +378,7 @@ sequenceDiagram
 ```
 
 **Índices:**
+
 - `{ nombre: 1 }` — UNIQUE (evita categorías duplicadas)
 
 **Colección: `gastos`**
@@ -396,10 +398,12 @@ sequenceDiagram
 ```
 
 **Índices:**
+
 - `{ categoria: 1 }` — Para búsquedas y populate por categoría
 - `{ fecha: 1 }` — Para filtrado por rango de fechas
 
 **Relación Categoría → Gasto:**
+
 - **Tipo**: 1:N (One-to-Many)
 - **Cardinalidad**: Una categoría puede tener múltiples gastos; cada gasto pertenece a exactamente una categoría.
 - **Integridad referencial**: La referencia se gestiona mediante `ObjectId` con `ref: 'Categoria'` y `populate()` en las consultas.
@@ -408,7 +412,7 @@ sequenceDiagram
 ```mermaid
 erDiagram
     CATEGORIA ||--o{ GASTO : "tiene muchos"
-    
+
     CATEGORIA {
         ObjectId _id PK
         String nombre UK
@@ -416,7 +420,7 @@ erDiagram
         String descripcion
         Boolean activo
     }
-    
+
     GASTO {
         ObjectId _id PK
         String descripcion
@@ -460,13 +464,13 @@ graph TB
     U --> UC10
     U --> UC11
     U --> UC12
-    
+
     CSV[/"Archivo CSV<br>(BBVA)"/] -.->|"Fuente de datos"| UC9
 ```
 
 ### 4.4 Modelo Entidad-Relación (ER) y Modelo Relacional
 
-*Véase el diagrama ER en la sección 4.2.4 (generado con Mermaid).*
+_Véase el diagrama ER en la sección 4.2.4 (generado con Mermaid)._
 
 #### 4.4.1 Descripción de Relaciones
 
@@ -561,23 +565,23 @@ graph TB
 ```mermaid
 graph TD
     Start["Inicio (/)"] -->|"redirectTo"| Dashboard
-    
+
     Dashboard["🏠 Dashboard<br>(Tabla de movimientos)"]
     Categories["📂 Categorías<br>(Gestión CRUD)"]
     Overview["📊 Overview<br>(Gráficos y KPIs)"]
-    
+
     Dashboard --> |"Crear"| CreateModal["Modal: Crear Movimiento"]
     Dashboard --> |"Editar"| EditModal["Modal: Editar Movimiento"]
     Dashboard --> |"Eliminar"| ConfirmDelete["Diálogo: Confirmar Eliminación"]
     Dashboard --> |"Importar"| ImportCSV["File Input: CSV Upload"]
     Dashboard --> |"Exportar"| DownloadCSV["Descarga: CSV"]
-    
+
     Categories --> |"Crear"| CatModal["Modal: Crear Categoría"]
     Categories --> |"Editar"| CatEditModal["Modal: Editar Categoría"]
     Categories --> |"Eliminar"| CatConfirm["Diálogo: Confirmar Eliminación"]
-    
+
     Overview --> |"Filtros"| Filters["Panel: Filtros de período e importe"]
-    
+
     Navbar["Menú de Navegación (siempre visible)"] --> Dashboard
     Navbar --> Categories
     Navbar --> Overview
@@ -589,20 +593,20 @@ graph TD
 
 ### 5.1 Stack Tecnológico
 
-| Capa | Tecnología | Versión | Justificación |
-|---|---|---|---|
-| **Frontend** | Angular | 21.x | Framework SPA maduro con soporte nativo de Signals, standalone components y tipado TypeScript. Última versión estable con mejoras de rendimiento y DX. |
-| **CSS Framework** | TailwindCSS | 4.x | Framework utility-first con compilación JIT, configuración PostCSS. Permite prototipado rápido y consistencia visual. |
-| **Gráficos** | Chart.js + ng2-charts | 4.5 / 8.0 | Librería ligera y flexible para gráficos interactivos (donut, línea), con wrapper Angular oficial. |
-| **Testing Frontend** | Vitest | 4.x | Framework de testing rápido y compatible con el ecosistema Vite/ESM moderno. |
-| **Backend** | Node.js + Express | 22 / 4.x | Runtime JavaScript con framework HTTP minimalista. Ecosistema de middleware extenso. |
-| **ODM** | Mongoose | 7.x | Object Document Mapper para MongoDB con esquemas, validaciones y populate. |
-| **CSV Processing** | csv-parser + PapaParse | 3.x / 5.x | `csv-parser` para lectura streaming de CSVs; PapaParse para generación/serialización. |
-| **File Upload** | Multer | 2.x | Middleware Express para manejo de `multipart/form-data` con límites de tamaño y filtro MIME. |
-| **Base de Datos** | MongoDB | latest | Base de datos documental NoSQL. Esquema flexible ideal para datos financieros con estructura variable. |
-| **Contenedores** | Docker + Docker Compose | — | Orquestación de 3 servicios (frontend, backend, MongoDB) con networking y volúmenes persistentes. |
-| **Servidor Web Prod.** | Nginx | Alpine | Servidor de archivos estáticos para la build de producción de Angular. |
-| **Control de Versiones** | Git + GitHub | — | Repositorio remoto con historial de cambios y colaboración. |
+| Capa                     | Tecnología              | Versión   | Justificación                                                                                                                                          |
+| ------------------------ | ----------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Frontend**             | Angular                 | 21.x      | Framework SPA maduro con soporte nativo de Signals, standalone components y tipado TypeScript. Última versión estable con mejoras de rendimiento y DX. |
+| **CSS Framework**        | TailwindCSS             | 4.x       | Framework utility-first con compilación JIT, configuración PostCSS. Permite prototipado rápido y consistencia visual.                                  |
+| **Gráficos**             | Chart.js + ng2-charts   | 4.5 / 8.0 | Librería ligera y flexible para gráficos interactivos (donut, línea), con wrapper Angular oficial.                                                     |
+| **Testing Frontend**     | Vitest                  | 4.x       | Framework de testing rápido y compatible con el ecosistema Vite/ESM moderno.                                                                           |
+| **Backend**              | Node.js + Express       | 22 / 4.x  | Runtime JavaScript con framework HTTP minimalista. Ecosistema de middleware extenso.                                                                   |
+| **ODM**                  | Mongoose                | 7.x       | Object Document Mapper para MongoDB con esquemas, validaciones y populate.                                                                             |
+| **CSV Processing**       | csv-parser + PapaParse  | 3.x / 5.x | `csv-parser` para lectura streaming de CSVs; PapaParse para generación/serialización.                                                                  |
+| **File Upload**          | Multer                  | 2.x       | Middleware Express para manejo de `multipart/form-data` con límites de tamaño y filtro MIME.                                                           |
+| **Base de Datos**        | MongoDB                 | latest    | Base de datos documental NoSQL. Esquema flexible ideal para datos financieros con estructura variable.                                                 |
+| **Contenedores**         | Docker + Docker Compose | —         | Orquestación de 3 servicios (frontend, backend, MongoDB) con networking y volúmenes persistentes.                                                      |
+| **Servidor Web Prod.**   | Nginx                   | Alpine    | Servidor de archivos estáticos para la build de producción de Angular.                                                                                 |
+| **Control de Versiones** | Git + GitHub            | —         | Repositorio remoto con historial de cambios y colaboración.                                                                                            |
 
 ### 5.2 Estructura del Proyecto
 
@@ -670,26 +674,28 @@ proyecto-intermodular/
 El punto de entrada del backend (`app.js`) configura una aplicación Express con los siguientes middlewares:
 
 ```javascript
-const express = require('express');
+const express = require("express");
 const app = express();
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const localization = require('./middlewares/localization');
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const localization = require("./middlewares/localization");
 
-app.use(cors());              // Habilita CORS para todas las peticiones
-app.use(bodyParser.json());   // Parseo de body JSON
-app.use(localization);        // Middleware de conversión de moneda
+app.use(cors()); // Habilita CORS para todas las peticiones
+app.use(bodyParser.json()); // Parseo de body JSON
+app.use(localization); // Middleware de conversión de moneda
 ```
 
 La conexión a MongoDB utiliza la variable de entorno `MONGO_URI` (inyectada por Docker Compose) con fallback a `localhost`:
 
 ```javascript
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/gastos', {
+mongoose
+  .connect(process.env.MONGO_URI || "mongodb://localhost:27017/gastos", {
     useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => console.log('Conectado a MongoDB'))
-  .catch(err => console.error(err));
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("Conectado a MongoDB"))
+  .catch((err) => console.error(err));
 ```
 
 #### 5.3.2 Modelos de Datos Mongoose
@@ -698,13 +704,17 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/gastos', {
 
 ```javascript
 const GastoSchema = new mongoose.Schema({
-    descripcion: { type: String, required: true },
-    nota:        { type: String, required: false },
-    tipo:        { type: String, required: false },
-    cantidad:    { type: Number, required: true },
-    categoria:   { type: mongoose.Schema.Types.ObjectId, ref: 'Categoria', required: true },
-    source:      { type: String, required: true, default: 'Unknown' },
-    fecha:       { type: Date, default: Date.now }
+  descripcion: { type: String, required: true },
+  nota: { type: String, required: false },
+  tipo: { type: String, required: false },
+  cantidad: { type: Number, required: true },
+  categoria: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Categoria",
+    required: true,
+  },
+  source: { type: String, required: true, default: "Unknown" },
+  fecha: { type: Date, default: Date.now },
 });
 ```
 
@@ -712,10 +722,10 @@ const GastoSchema = new mongoose.Schema({
 
 ```javascript
 const CategoriaSchema = new mongoose.Schema({
-    nombre:      { type: String, required: true, unique: true },
-    color:       { type: String, required: false },
-    descripcion: { type: String, required: false },
-    activo:      { type: Boolean, required: false, default: true },
+  nombre: { type: String, required: true, unique: true },
+  color: { type: String, required: false },
+  descripcion: { type: String, required: false },
+  activo: { type: Boolean, required: false, default: true },
 });
 ```
 
@@ -724,39 +734,46 @@ const CategoriaSchema = new mongoose.Schema({
 **Creación de un gasto** con validación y populate de categoría:
 
 ```javascript
-app.post('/gastos', async (req, res) => {
-    try {
-        const { descripcion, cantidad, categoria, nota, tipo } = req.body;
-        if (!descripcion || !cantidad || !categoria || !nota || !tipo) {
-            return res.status(400).json({ error: 'Todos los campos son obligatorios' });
-        }
-        const nuevoGasto = new Gasto(req.body);
-        await nuevoGasto.save();
-        const gastoGuardado = await Gasto.findById(nuevoGasto._id).populate('categoria');
-        res.status(201).json(gastoGuardado);
-    } catch (err) {
-        res.status(500).json({ error: 'Error al crear el gasto' });
+app.post("/gastos", async (req, res) => {
+  try {
+    const { descripcion, cantidad, categoria, nota, tipo } = req.body;
+    if (!descripcion || !cantidad || !categoria || !nota || !tipo) {
+      return res
+        .status(400)
+        .json({ error: "Todos los campos son obligatorios" });
     }
+    const nuevoGasto = new Gasto(req.body);
+    await nuevoGasto.save();
+    const gastoGuardado = await Gasto.findById(nuevoGasto._id).populate(
+      "categoria",
+    );
+    res.status(201).json(gastoGuardado);
+  } catch (err) {
+    res.status(500).json({ error: "Error al crear el gasto" });
+  }
 });
 ```
 
 **Listado de gastos con filtros dinámicos**:
 
 ```javascript
-app.get('/gastos', async (req, res) => {
-    try {
-        const { categoria, cantidad, fechaInicio, fechaFin } = req.query;
-        let filtro = {};
-        if (categoria) filtro['categoria'] = categoria;
-        if (cantidad) filtro['cantidad'] = { $gte: parseFloat(cantidad) };
-        if (fechaInicio && fechaFin) {
-            filtro['fecha'] = { $gte: new Date(fechaInicio), $lte: new Date(fechaFin) };
-        }
-        const gastos = await Gasto.find(filtro).populate('categoria');
-        res.json(gastos);
-    } catch (error) {
-        res.status(500).json({ error: 'Error al obtener los gastos' });
+app.get("/gastos", async (req, res) => {
+  try {
+    const { categoria, cantidad, fechaInicio, fechaFin } = req.query;
+    let filtro = {};
+    if (categoria) filtro["categoria"] = categoria;
+    if (cantidad) filtro["cantidad"] = { $gte: parseFloat(cantidad) };
+    if (fechaInicio && fechaFin) {
+      filtro["fecha"] = {
+        $gte: new Date(fechaInicio),
+        $lte: new Date(fechaFin),
+      };
     }
+    const gastos = await Gasto.find(filtro).populate("categoria");
+    res.json(gastos);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener los gastos" });
+  }
 });
 ```
 
@@ -773,8 +790,8 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(withInterceptors([configInterceptor])),
-    provideCharts(withDefaultRegisterables())
-  ]
+    provideCharts(withDefaultRegisterables()),
+  ],
 };
 ```
 
@@ -782,10 +799,10 @@ export const appConfig: ApplicationConfig = {
 
 ```typescript
 export const routes: Routes = [
-  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-  { path: 'dashboard', component: Dashboard },
-  { path: 'overview', component: OverviewComponent },
-  { path: 'categories', component: Categories },
+  { path: "", redirectTo: "dashboard", pathMatch: "full" },
+  { path: "dashboard", component: Dashboard },
+  { path: "overview", component: OverviewComponent },
+  { path: "categories", component: Categories },
 ];
 ```
 
@@ -795,11 +812,11 @@ Los servicios utilizan **Angular Signals** para gestión de estado reactiva, eli
 
 ```typescript
 // expense.service.ts
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class ExpenseService {
   private http = inject(HttpClient);
   private configService = inject(ConfigService);
-  
+
   private expensesSignal = signal<Gasto[]>([]);
   public expenses = computed(() => this.expensesSignal());
 
@@ -815,8 +832,8 @@ export class ExpenseService {
   addExpense(gasto: Partial<Gasto>): Observable<Gasto> {
     return this.http.post<Gasto>(this.apiUrl, gasto).pipe(
       tap((newExp) => {
-        this.expensesSignal.update(exps => [...exps, newExp]);
-      })
+        this.expensesSignal.update((exps) => [...exps, newExp]);
+      }),
     );
   }
 }
@@ -831,9 +848,9 @@ export const configInterceptor: HttpInterceptorFn = (req, next) => {
   const configService = inject(ConfigService);
   const clonedRequest = req.clone({
     setHeaders: {
-      'Accept-Language': configService.language(),
-      'X-Currency': configService.currency()
-    }
+      "Accept-Language": configService.language(),
+      "X-Currency": configService.currency(),
+    },
   });
   return next(clonedRequest);
 };
@@ -849,7 +866,7 @@ El sistema de internacionalización se implementa sin librerías externas median
 4. En los templates se usa `{{ 'CLAVE' | translate }}` para todas las cadenas de la interfaz.
 
 ```typescript
-@Pipe({ name: 'translate', standalone: true, pure: false })
+@Pipe({ name: "translate", standalone: true, pure: false })
 export class TranslatePipe implements PipeTransform {
   private configService = inject(ConfigService);
   transform(key: string): string {
@@ -866,17 +883,17 @@ El middleware `localization.js` intercepta `res.json()` de Express para transfor
 const EXCHANGE_RATES = { EUR: 1.0, USD: 1.09, GBP: 0.86 };
 
 module.exports = (req, res, next) => {
-    const currency = (req.headers['x-currency'] || 'EUR').toUpperCase();
-    const rate = EXCHANGE_RATES[currency] || 1.0;
-    
-    const originalJson = res.json;
-    res.json = function (data) {
-        if (data && typeof data === 'object') {
-            data = transformData(data, rate, currency !== 'EUR');
-        }
-        return originalJson.call(this, data);
-    };
-    next();
+  const currency = (req.headers["x-currency"] || "EUR").toUpperCase();
+  const rate = EXCHANGE_RATES[currency] || 1.0;
+
+  const originalJson = res.json;
+  res.json = function (data) {
+    if (data && typeof data === "object") {
+      data = transformData(data, rate, currency !== "EUR");
+    }
+    return originalJson.call(this, data);
+  };
+  next();
 };
 ```
 
@@ -884,16 +901,49 @@ La función `transformData` recorre recursivamente la respuesta JSON, convirtien
 
 ### 5.7 Importación y Exportación de Datos CSV
 
-#### Importación (BBVA)
+#### Importación (CSV Genérico)
 
 El controlador `cargarCsv` implementa un pipeline de procesamiento:
 
 1. **Recepción**: Multer almacena el archivo en `uploads/` con validación MIME (`text/csv`) y límite de 5 MB.
-2. **Parseo**: `csv-parser` lee el archivo como stream con separador `;` y normalización de headers (lowercase + trim).
+2. **Parseo**: `csv-parser` lee el archivo como stream con auto-detección de separador (`;` o `,`) y normalización de headers (lowercase + trim).
 3. **Validación**: Se validan campos obligatorios (`descripcion`, `cantidad`, `categoria`, `fecha`) y se descartan filas inválidas.
 4. **Auto-creación de categorías**: Si una categoría del CSV no existe en la base de datos, se crea automáticamente.
-5. **Conversión de fecha**: El formato `dd/mm/yyyy` se transforma a `yyyy-mm-dd` para compatibilidad con `Date` de JavaScript.
+5. **Conversión de fecha**: Los formatos `dd/mm/yyyy` y `yyyy-mm-dd` se transforman automáticamente al formato interno de JavaScript.
 6. **Limpieza**: El archivo temporal se elimina tras el procesamiento.
+
+**Especificación del formato CSV genérico esperado:**
+
+El archivo CSV debe contener las siguientes columnas (el orden no es importante, pero los nombres deben coincidir exactamente):
+
+| Columna       | Tipo   | Obligatorio | Descripción                                                           | Ejemplo                  |
+| ------------- | ------ | ----------- | --------------------------------------------------------------------- | ------------------------ |
+| `descripcion` | String | Sí          | Descripción del movimiento financiero                                 | "Compra en supermercado" |
+| `cantidad`    | Número | Sí          | Importe del movimiento (positivo para ingresos, negativo para gastos) | 50.25                    |
+| `categoria`   | String | Sí          | Nombre de la categoría del gasto                                      | "Alimentación"           |
+| `fecha`       | Fecha  | Sí          | Fecha del movimiento (formato: `dd/mm/yyyy` o `yyyy-mm-dd`)           | "15/03/2024"             |
+| `nota`        | String | No          | Nota adicional sobre el movimiento                                    | "Compra mensual"         |
+| `tipo`        | String | No          | Tipo de movimiento (ej: "gasto", "ingreso")                           | "gasto"                  |
+
+**Ejemplo de CSV válido:**
+
+```csv
+descripcion,cantidad,categoria,fecha,nota,tipo
+Compra en supermercado,-45.50,Alimentación,15/03/2024,Compra semanal,gasto
+Salario mensual,2500.00,Ingresos,01/03/2024,Nómina marzo,ingreso
+Taxi al aeropuerto,-25.00,Transporte,10/03/2024,,gasto
+Venta de libros usados,15.00,Ingresos,12/03/2024,Plataforma online,ingreso
+```
+
+**Notas importantes:**
+
+- Los separadores soportados son `;` (punto y coma) y `,` (coma).
+- Las columnas obligatorias son: `descripcion`, `cantidad`, `categoria`, `fecha`.
+- Las columnas `nota` y `tipo` son opcionales.
+- Las cantidades pueden ser positivas (ingresos) o negativas (gastos).
+- Los formatos de fecha soportados son: `dd/mm/yyyy` y `yyyy-mm-dd`.
+- Si se importa una categoría que no existe, se creará automáticamente en la base de datos.
+- Las filas con datos inválidos o campos obligatorios vacíos serán ignoradas durante la importación.
 
 #### Exportación
 
@@ -908,17 +958,17 @@ services:
   mongo:
     image: mongo:latest
     ports: ["27017:27017"]
-    volumes: [mongo-data:/data/db]     # Persistencia de datos
+    volumes: [mongo-data:/data/db] # Persistencia de datos
 
   backend:
-    build: ./back                       # Node.js 18-alpine
+    build: ./back # Node.js 18-alpine
     ports: ["5000:5000"]
     environment:
       - MONGO_URI=mongodb://mongo:27017/gastos
     depends_on: [mongo]
 
   frontend:
-    build: ./front                      # Multi-stage: Node 22 build → Nginx
+    build: ./front # Multi-stage: Node 22 build → Nginx
     ports: ["80:80"]
     depends_on: [backend]
 
@@ -928,22 +978,24 @@ networks:
 ```
 
 **Frontend Dockerfile** — Build multi-etapa:
+
 - **Etapa 1 (Build)**: `node:22-alpine` — Instalación de dependencias + compilación de Angular en modo producción.
 - **Etapa 2 (Serve)**: `nginx:alpine` — Copia de los artefactos compilados al directorio de Nginx.
 
 **Backend Dockerfile** — Etapa única:
+
 - `node:18-alpine` — Instalación de dependencias + ejecución con `npm start` (Node `--watch` en desarrollo).
 
 ### 5.9 Gestión de Estado Reactiva con Angular Signals
 
 La aplicación adopta **Angular Signals** (API estable desde Angular 17+) como patrón principal de gestión de estado, reemplazando patrones más complejos como NgRx:
 
-| Concepto | Implementación |
-|---|---|
-| **Estado privado** | `signal<T>()` en cada servicio |
-| **Estado público** | `computed()` para exposición de solo lectura |
-| **Actualización optimista** | `signal.update()` tras respuesta HTTP exitosa |
-| **Reactividad cruzada** | `effect()` para recargar datos al cambiar idioma/moneda |
+| Concepto                         | Implementación                                                |
+| -------------------------------- | ------------------------------------------------------------- |
+| **Estado privado**               | `signal<T>()` en cada servicio                                |
+| **Estado público**               | `computed()` para exposición de solo lectura                  |
+| **Actualización optimista**      | `signal.update()` tras respuesta HTTP exitosa                 |
+| **Reactividad cruzada**          | `effect()` para recargar datos al cambiar idioma/moneda       |
 | **Persistencia de preferencias** | `localStorage` para idioma y moneda, sincronizado con Signals |
 
 Este enfoque proporciona reactividad granular sin necesidad de stores centralizados, reduciendo la complejidad y el bundle size.
