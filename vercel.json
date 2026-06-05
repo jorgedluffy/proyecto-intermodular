@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.js",
+      "src": "back/app.js",
       "use": "@vercel/node"
     },
     {
@@ -14,10 +14,10 @@
     }
   ],
   "routes": [
-    { "src": "/gastos(.*)", "dest": "/api/index.js" },
-    { "src": "/categorias(.*)", "dest": "/api/index.js" },
-    { "src": "/cargarCsv", "dest": "/api/index.js" },
-    { "src": "/descargarCsv", "dest": "/api/index.js" },
+    { "src": "/gastos(.*)", "dest": "/back/app.js" },
+    { "src": "/categorias(.*)", "dest": "/back/app.js" },
+    { "src": "/cargarCsv", "dest": "/back/app.js" },
+    { "src": "/descargarCsv", "dest": "/back/app.js" },
     { "src": "/(.*)", "dest": "/front/$1" }
   ]
 }
