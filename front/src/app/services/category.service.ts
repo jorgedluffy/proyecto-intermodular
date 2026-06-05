@@ -2,6 +2,7 @@ import { Injectable, signal, inject, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { ConfigService } from './config.service';
+import { environment } from '../../environments/environment';
 
 export interface Categoria {
   _id?: string;
@@ -15,7 +16,7 @@ export interface Categoria {
 export class CategoryService {
   private http = inject(HttpClient);
   private configService = inject(ConfigService);
-  private apiUrl = 'http://localhost:5000/categorias';
+  private apiUrl = `${environment.apiUrl}/categorias`;
 
   private categoriesSignal = signal<Categoria[]>([]);
   public categories = computed(() => this.categoriesSignal());

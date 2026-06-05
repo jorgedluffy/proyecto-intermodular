@@ -4,7 +4,7 @@
     "description": "Backend para la gestión de gastos del hogar.",
     "main": "app.js",
     "scripts": {
-        "start": "node --watch app.js",
+        "start": "node --watch server.js",
         "dev": "nodemon index.js"
     },
     "dependencies": {

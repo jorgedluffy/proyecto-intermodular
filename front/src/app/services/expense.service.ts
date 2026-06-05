@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { Categoria } from './category.service';
 import { ConfigService } from './config.service';
+import { environment } from '../../environments/environment';
 
 export interface Gasto {
   _id?: string;
@@ -19,7 +20,7 @@ export interface Gasto {
 export class ExpenseService {
   private http = inject(HttpClient);
   private configService = inject(ConfigService);
-  private apiUrl = 'http://localhost:5000/gastos';
+  private apiUrl = `${environment.apiUrl}/gastos`;
 
   private expensesSignal = signal<Gasto[]>([]);
   public expenses = computed(() => this.expensesSignal());
@@ -68,7 +69,7 @@ export class ExpenseService {
   importFile(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post('http://localhost:5000/cargarCsv', formData).pipe(
+    return this.http.post(`${environment.apiUrl}/cargarCsv`, formData).pipe(
       tap(() => {
         this.loadExpenses();
       })
@@ -76,7 +77,7 @@ export class ExpenseService {
   }
 
   downloadExpenses(): Observable<Blob> {
-    return this.http.get('http://localhost:5000/descargarCsv', {
+    return this.http.get(`${environment.apiUrl}/descargarCsv`, {
       responseType: 'blob'
     });
   }

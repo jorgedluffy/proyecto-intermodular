@@ -95,7 +95,7 @@ const descargarCsv = async (req, res) => {
         }));
 
         const csv = Papa.unparse(dataProcesada, { delimiter: ";" });
-        const tempDir = path.join(__dirname, '../temp');
+        const tempDir = '/tmp';
         
         // Crear directorio temp si no existe
         if (!fs.existsSync(tempDir)) {

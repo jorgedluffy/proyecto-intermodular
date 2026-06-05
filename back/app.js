@@ -29,7 +29,7 @@ const fs = require('fs');
 
 // Configurar almacenamiento de multer
 const upload = multer({
-    dest: 'uploads/',
+    dest: '/tmp/uploads/',
     limits: { fileSize: 5 * 1024 * 1024 }, // Límite de archivo: 5 MB
     fileFilter: (req, file, cb) => {
         if (file.mimetype === 'text/csv') {
@@ -213,8 +213,4 @@ app.delete('/gastos/:id', async (req, res) => {
     }
 });
 
-// Iniciar el servidor
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
-});
+module.exports = app;
