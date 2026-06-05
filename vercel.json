@@ -18,6 +18,6 @@
     { "src": "/categorias(.*)", "dest": "/back/app.js" },
     { "src": "/cargarCsv", "dest": "/back/app.js" },
     { "src": "/descargarCsv", "dest": "/back/app.js" },
-    { "src": "/(.*)", "dest": "/front/$1" }
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
